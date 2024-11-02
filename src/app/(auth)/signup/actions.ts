@@ -2,7 +2,6 @@
 
 import { lucia } from "@/auth";
 import prisma from "@/lib/prisma";
-import streamServerClient from "@/lib/stream";
 import { signUpSchema, SignUpValues } from "@/lib/validation";
 import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
@@ -55,30 +54,36 @@ export async function signUp(
       };
     }
 
-    await prisma.$transaction(async (tx) => {
-      await tx.user.create({
+    // await prisma.$transaction(async (tx) => {
+    //   await tx.user.create({
+    //     data: {
+    //       id: userId,
+    //       username,
+    //       displayName: username,
+    //       email,
+    //       passwordHash,
+    //     },
+    //   });
+    await prisma.user.create({
         data: {
-          id: userId,
-          username,
-          displayName: username,
-          email,
-          passwordHash,
-        },
-      });
-      await streamServerClient.upsertUser({
-        id: userId,
-        username,
-        name: username,
-      });
+            id: userId,
+            username,
+            displayName: username,
+            email,
+            passwordHash
+        }
     });
+    
+      
+    
 
     const session = await lucia.createSession(userId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes,
-    );
+    (await cookies()).set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
 
     return redirect("/");
   } catch (error) {
