@@ -1,4 +1,4 @@
-import loginImage from "@/assets/login-image.jpg";
+import loginImage from "@/assets/login-gif.gif";
 import { Metadata } from "next";
 import LoginForm from "./LoginForm";
 import Link from "next/link";
