@@ -58,7 +58,7 @@ export default function ForYouFeed(){
     ))}
 
     {isFetchingNextPage && <Loader2 className="mx-auto animate-spin"/>}
-
+    
     </InfiniteScrollContainer>
 
     
