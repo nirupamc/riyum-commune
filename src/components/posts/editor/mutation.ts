@@ -25,7 +25,7 @@ export function useSubmitPostMutation() {
                             if (index === 0) {
                                 return {
                                     ...page,
-                                    posts: [newPost, ...page.posts], // Corrected to 'posts'
+                                    posts: [newPost, ...page.posts], 
                                 };
                             }
                             return page;
@@ -40,6 +40,13 @@ export function useSubmitPostMutation() {
                     return !query.state.data;
                 },
             });
+
+            queryClient.invalidateQueries({
+                queryKey:queryFilter.queryKey,
+                predicate(query){
+                    return !query.state.data;
+                }
+            })
 
             toast({
                 description: "Post created",
